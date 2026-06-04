@@ -28,11 +28,10 @@ public class DataLoader implements CommandLineRunner {
     };
 
     private final MateriaRepository repositorio;
-    private final ObjectMapper mapper;
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    public DataLoader(MateriaRepository repositorio, ObjectMapper mapper) {
+    public DataLoader(MateriaRepository repositorio) {
         this.repositorio = repositorio;
-        this.mapper = mapper;
     }
 
     @Override
