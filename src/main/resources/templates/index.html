@@ -10,142 +10,44 @@
 
 <header>
     <h1>&#127979; Generador de Horarios</h1>
-    <span>Planifica tu semestre universitario</span>
+    <span>Selecciona materias y profesores para ver todas las combinaciones posibles</span>
 </header>
 
 <main>
 
     <!-- ═══════════════════════════════════════════════════════════════════
-         COLUMNA IZQUIERDA — Panel de administración
-    ════════════════════════════════════════════════════════════════════ -->
-    <aside id="panel-admin">
-
-        <!-- Sección: Nueva Materia -->
-        <div class="card">
-            <h2>&#10133; Nueva Materia</h2>
-            <div class="formulario">
-                <label for="input-nombre-materia">Nombre de la materia</label>
-                <input type="text" id="input-nombre-materia"
-                       placeholder="Ej: Cálculo I, Física II…"/>
-                <button class="btn btn-primario" onclick="agregarMateria()">
-                    Agregar materia
-                </button>
-            </div>
-            <div class="lista-materias-admin" id="lista-materias-admin"></div>
-        </div>
-
-        <!-- Sección: Nuevo Profesor -->
-        <div class="card">
-            <h2>&#128101; Nuevo Profesor</h2>
-            <div class="formulario">
-                <label for="select-materia-profesor">Materia</label>
-                <select id="select-materia-profesor">
-                    <option value="">— seleccionar materia —</option>
-                </select>
-
-                <label for="input-nombre-profesor">Nombre del profesor</label>
-                <input type="text" id="input-nombre-profesor"
-                       placeholder="Ej: Dr. García"/>
-
-                <label for="input-nota-profesor">
-                    Nota personal
-                    <span style="font-weight:400;color:#90A4AE">
-                        (número o texto, opcional)
-                    </span>
-                </label>
-                <input type="text" id="input-nota-profesor"
-                       placeholder="Ej: 8.5 o &quot;muy bueno&quot;"/>
-
-                <button class="btn btn-primario" onclick="agregarProfesor()">
-                    Agregar profesor
-                </button>
-            </div>
-        </div>
-
-        <!-- Sección: Nuevo Bloque Horario -->
-        <div class="card">
-            <h2>&#128336; Nuevo Bloque Horario</h2>
-            <div class="formulario">
-                <label for="select-materia-bloque">Materia</label>
-                <select id="select-materia-bloque" onchange="actualizarProfesoresBloque()">
-                    <option value="">— seleccionar materia —</option>
-                </select>
-
-                <label for="select-profesor-bloque">Profesor</label>
-                <select id="select-profesor-bloque">
-                    <option value="">— seleccionar profesor —</option>
-                </select>
-
-                <label for="select-dia">Día</label>
-                <select id="select-dia">
-                    <option value="LUNES">Lunes</option>
-                    <option value="MARTES">Martes</option>
-                    <option value="MIERCOLES">Miércoles</option>
-                    <option value="JUEVES">Jueves</option>
-                    <option value="VIERNES">Viernes</option>
-                    <option value="SABADO">Sábado</option>
-                </select>
-
-                <label for="input-hora-inicio">Hora inicio</label>
-                <input type="time" id="input-hora-inicio" value="08:00"/>
-
-                <label for="input-hora-fin">Hora fin</label>
-                <input type="time" id="input-hora-fin" value="10:00"/>
-
-                <button class="btn btn-primario" onclick="agregarBloque()">
-                    Agregar bloque
-                </button>
-            </div>
-        </div>
-
-    </aside>
-
-    <!-- ═══════════════════════════════════════════════════════════════════
-         COLUMNA DERECHA — Panel de selección
+         Panel de selección de materias y profesores
     ════════════════════════════════════════════════════════════════════ -->
     <section class="card" id="panel-seleccion">
-        <h2>&#9989; Materias a cursar este semestre</h2>
+        <h2>&#9989; Selecciona tus materias y profesores</h2>
+        <p class="instrucciones-texto">
+            Marca las materias que quieres cursar. Luego elige uno o varios profesores de cada una.
+            El sistema calculará todas las combinaciones posibles y las mostrará ordenadas de mejor a peor.
+        </p>
 
-        <div class="lista-materias-seleccion" id="lista-materias-seleccion">
-            <p class="texto-sin-materias" id="texto-sin-materias">
-                Aún no hay materias. Agrégalas en el panel izquierdo.
-            </p>
+        <!-- Lista dinámica de materias con checkboxes de profesores -->
+        <div id="lista-materias-seleccion">
+            <p class="texto-cargando">Cargando materias&#8230;</p>
         </div>
 
-        <button class="btn btn-generar" onclick="generarHorario()">
-            &#9654; Generar horario
-        </button>
+        <div class="pie-seleccion">
+            <button class="btn btn-generar" onclick="generarHorario()">
+                &#9654; Calcular todas las combinaciones
+            </button>
+        </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════════════
-         COLUMNA DERECHA — Panel de resultados
+         Panel de resultados — oculto hasta que se genera
     ════════════════════════════════════════════════════════════════════ -->
-    <section class="card" id="panel-resultados">
-        <h2>&#128197; Horario generado</h2>
+    <section id="panel-resultados" class="oculto">
 
-        <!-- Resumen de puntuación -->
-        <div class="resumen-puntuacion" id="resumen-puntuacion"></div>
+        <!-- Cabecera con estadísticas de la búsqueda -->
+        <div class="card" id="cabecera-resultados"></div>
 
-        <!-- Advertencias de choques -->
-        <div id="contenedor-choques"></div>
+        <!-- Tarjetas de combinaciones, una por cada resultado -->
+        <div id="lista-combinaciones"></div>
 
-        <!-- Grilla de horario Lunes–Sábado -->
-        <div class="contenedor-grilla">
-            <table class="grilla-horario" id="tabla-horario">
-                <thead>
-                    <tr>
-                        <th class="col-hora">Hora</th>
-                        <th>Lunes</th>
-                        <th>Martes</th>
-                        <th>Miércoles</th>
-                        <th>Jueves</th>
-                        <th>Viernes</th>
-                        <th>Sábado</th>
-                    </tr>
-                </thead>
-                <tbody id="cuerpo-tabla"></tbody>
-            </table>
-        </div>
     </section>
 
 </main>

@@ -1,7 +1,7 @@
 package com.horarios.generador.controller;
 
-import com.horarios.generador.dto.ResultadoHorario;
-import com.horarios.generador.dto.SeleccionHorario;
+import com.horarios.generador.dto.RespuestaCombinaciones;
+import com.horarios.generador.dto.SeleccionMultiple;
 import com.horarios.generador.model.BloqueHorario;
 import com.horarios.generador.model.Materia;
 import com.horarios.generador.model.Profesor;
@@ -14,8 +14,12 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Controlador REST que expone los endpoints para gestionar materias,
- * profesores, bloques horarios y la generación del horario.
+ * Controlador REST con los endpoints de consulta de materias,
+ * gestión de bloques horarios y generación de combinaciones.
+ *
+ * Endpoints eliminados (los datos se cargan desde materias.json al iniciar):
+ *   POST /api/materias
+ *   POST /api/materias/{id}/profesores
  */
 @RestController
 @RequestMapping("/api")
@@ -31,51 +35,16 @@ public class MateriaController {
 
     // ── Materias ──────────────────────────────────────────────────────────────
 
-    /** Retorna la lista completa de materias con sus profesores y bloques. */
+    /** Devuelve todas las materias con sus grupos y bloques horarios. */
     @GetMapping("/materias")
     public List<Materia> listarMaterias() {
         return repositorio.listarMaterias();
     }
 
-    /**
-     * Crea una nueva materia.
-     * Cuerpo esperado: { "nombre": "Cálculo I" }
-     */
-    @PostMapping("/materias")
-    public ResponseEntity<Materia> crearMateria(@RequestBody Materia materia) {
-        if (materia.getNombre() == null || materia.getNombre().isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-        Materia guardada = repositorio.guardarMateria(materia);
-        return ResponseEntity.ok(guardada);
-    }
-
-    // ── Profesores ────────────────────────────────────────────────────────────
-
-    /**
-     * Agrega un profesor a una materia existente.
-     * Cuerpo esperado: { "nombre": "Dr. García", "nota": "8.5" }
-     */
-    @PostMapping("/materias/{id}/profesores")
-    public ResponseEntity<Profesor> agregarProfesor(
-            @PathVariable Long id,
-            @RequestBody Profesor profesor) {
-
-        Optional<Materia> optMateria = repositorio.buscarMateriaPorId(id);
-        if (optMateria.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        if (profesor.getNombre() == null || profesor.getNombre().isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-        Profesor guardado = repositorio.guardarProfesor(profesor, optMateria.get());
-        return ResponseEntity.ok(guardado);
-    }
-
     // ── Bloques horarios ──────────────────────────────────────────────────────
 
     /**
-     * Agrega un bloque horario a un profesor existente.
+     * Agrega un bloque horario a un profesor existente (uso interno/admin).
      * Cuerpo esperado: { "dia": "LUNES", "horaInicio": "08:00", "horaFin": "10:00" }
      */
     @PostMapping("/profesores/{id}/bloques")
@@ -84,32 +53,33 @@ public class MateriaController {
             @RequestBody BloqueHorario bloque) {
 
         Optional<Profesor> optProfesor = repositorio.buscarProfesorPorId(id);
-        if (optProfesor.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        if (bloque.getDia() == null
-                || bloque.getHoraInicio() == null
-                || bloque.getHoraFin() == null) {
+        if (optProfesor.isEmpty()) return ResponseEntity.notFound().build();
+
+        if (bloque.getDia() == null || bloque.getHoraInicio() == null || bloque.getHoraFin() == null) {
             return ResponseEntity.badRequest().build();
         }
-        BloqueHorario guardado = repositorio.guardarBloque(bloque, optProfesor.get());
-        return ResponseEntity.ok(guardado);
+        return ResponseEntity.ok(repositorio.guardarBloque(bloque, optProfesor.get()));
     }
 
-    // ── Generación de horario ─────────────────────────────────────────────────
+    // ── Generación de combinaciones ───────────────────────────────────────────
 
     /**
-     * Genera el horario a partir de las selecciones del estudiante.
-     * Cuerpo esperado: [ { "materiaId": 1, "profesorId": 2 }, ... ]
+     * Recibe una lista de {materiaId, profesoresIds[]} y calcula todas las
+     * combinaciones posibles. Devuelve las mejores ordenadas por puntaje.
+     *
+     * Cuerpo esperado:
+     * [
+     *   { "materiaId": 1, "profesoresIds": [3, 7, 12] },
+     *   { "materiaId": 2, "profesoresIds": [15] }
+     * ]
      */
     @PostMapping("/horario/generar")
-    public ResponseEntity<ResultadoHorario> generarHorario(
-            @RequestBody List<SeleccionHorario> selecciones) {
+    public ResponseEntity<RespuestaCombinaciones> generarCombinaciones(
+            @RequestBody List<SeleccionMultiple> selecciones) {
 
         if (selecciones == null || selecciones.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        ResultadoHorario resultado = horarioService.generarHorario(selecciones);
-        return ResponseEntity.ok(resultado);
+        return ResponseEntity.ok(horarioService.generarTodasLasCombinaciones(selecciones));
     }
 }
