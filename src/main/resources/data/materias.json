@@ -1,0 +1,294 @@
+[
+    {
+        "id": "IAMG_M",
+        "name": "Inteligencia artificial en ciencia de datos: modelos generativos, LLMs y agentes inteligentes",
+        "credits": 2,
+        "groups": [
+            {
+                "id": "IAMG_M-1",
+                "code": "1562",
+                "type": "lec",
+                "professor": "Wilmer Edicson Garzon Alfonso",
+                "sessions": [
+                    {"startTime": "16:00", "endTime": "21:00", "day": 0},
+                    {"startTime": "16:00", "endTime": "21:00", "day": 1},
+                    {"startTime": "16:00", "endTime": "21:00", "day": 2},
+                    {"startTime": "16:00", "endTime": "21:00", "day": 3},
+                    {"startTime": "16:00", "endTime": "20:00", "day": 4}
+                ]
+            }
+        ]
+    },
+    {
+        "id": "GPEO_E",
+        "name": "Gerencia de Proyectos en Operaciones",
+        "credits": 2,
+        "groups": [
+            {
+                "id": "GPEO_E-1",
+                "code": "1559",
+                "type": "lec",
+                "professor": "Jose Arturo Rodriguez",
+                "sessions": [
+                    {"startTime": "13:00", "endTime": "18:00", "day": 5},
+                    {"startTime": "07:00", "endTime": "12:00", "day": 5}
+                ]
+            }
+        ]
+    },
+    {
+        "id": "DMV2_M",
+        "name": "Desarrollo de trabajo de grado MCIV (2 créditos)",
+        "credits": 2,
+        "groups": [
+            {"id": "DMV2_M-1",  "code": "1597", "type": "lec", "professor": "Amalia Avendaño Sanchez",             "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 0}]},
+            {"id": "DMV2_M-2",  "code": "1598", "type": "lec", "professor": "Camilo Andres Perdomo Horta",         "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 0}]},
+            {"id": "DMV2_M-3",  "code": "1599", "type": "lec", "professor": "Carlos Eduardo Rodriguez Pineda",     "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 0}]},
+            {"id": "DMV2_M-4",  "code": "1600", "type": "lec", "professor": "Carlos Mario Piscal Arevalo",         "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-5",  "code": "1601", "type": "lec", "professor": "Claudia Jeanneth Rios Reyes",         "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-6",  "code": "1602", "type": "lec", "professor": "Fabian Augusto Lamus Baez",           "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-7",  "code": "1603", "type": "lec", "professor": "Fabian Rene Alvarez Sierra",          "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 0}]},
+            {"id": "DMV2_M-8",  "code": "1604", "type": "lec", "professor": "German Eduardo Acero Riveros",        "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-9",  "code": "1605", "type": "lec", "professor": "German Ricardo Santos Granados",      "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-10", "code": "1606", "type": "lec", "professor": "Gina Paola Gonzalez Angarita",        "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-11", "code": "1607", "type": "lec", "professor": "Guillermo Pabon Gutierrez",           "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-12", "code": "1608", "type": "lec", "professor": "Hector Alfonso Rodriguez Diaz",       "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 0}]},
+            {"id": "DMV2_M-13", "code": "1609", "type": "lec", "professor": "Hector Jose Perez Barrera",           "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-14", "code": "1610", "type": "lec", "professor": "Hector Matamoros Rodriguez",          "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-15", "code": "1611", "type": "lec", "professor": "Ivan Camilo Duran Tovar",             "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-16", "code": "1612", "type": "lec", "professor": "Jaime Erasmo Garzon Moreno",          "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-17", "code": "1613", "type": "lec", "professor": "Javier Fernando Camacho Tauta",       "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-18", "code": "1614", "type": "lec", "professor": "Johan Camilo Garzon Cubides",         "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 0}]},
+            {"id": "DMV2_M-19", "code": "1615", "type": "lec", "professor": "Jose Ignacio Nieto Garcia",           "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-20", "code": "1616", "type": "lec", "professor": "Jose Vicente Amortegui Gil",          "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-21", "code": "1617", "type": "lec", "professor": "Juan Carlos Ruge Cardenas",           "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-22", "code": "1618", "type": "lec", "professor": "Kevin Andres Tami Torres",            "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-23", "code": "1619", "type": "lec", "professor": "Laura Cristina Lesmes Posada",        "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-24", "code": "1620", "type": "lec", "professor": "Laura Marcela Valderrama Niño",       "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-25", "code": "1621", "type": "lec", "professor": "Lina Ximena Garzon Avila",            "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-26", "code": "1622", "type": "lec", "professor": "Luis Garza Vasquez",                  "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-27", "code": "1623", "type": "lec", "professor": "Maritza Cecilia Villamizar Ropero",   "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-28", "code": "1624", "type": "lec", "professor": "Miguel Angel Orejuela Duarte",        "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-29", "code": "1625", "type": "lec", "professor": "Monica Marcela Suarez Pradilla",      "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-30", "code": "1626", "type": "lec", "professor": "Nancy Torres Castellanos",            "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-31", "code": "1627", "type": "lec", "professor": "Pedro Nel Quiroga Saavedra",          "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-32", "code": "1629", "type": "lec", "professor": "Ramiro Gutierrez Rodriguez",          "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-33", "code": "1631", "type": "lec", "professor": "Sandra Rocio Jerez Barbosa",          "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-34", "code": "1632", "type": "lec", "professor": "William Hernando Carrillo Rodriguez", "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]},
+            {"id": "DMV2_M-35", "code": "1633", "type": "lec", "professor": "Yuly Andrea Sanchez Londoño",         "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]}
+        ]
+    },
+    {
+        "id": "DMV4_M",
+        "name": "Desarrollo de trabajo de grado MCIV (4 créditos)",
+        "credits": 4,
+        "groups": [
+            {"id": "DMV4_M-1",  "code": "1628", "type": "lec", "professor": "Amalia Avendaño Sanchez",             "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-2",  "code": "1630", "type": "lec", "professor": "Camilo Andres Perdomo Horta",         "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-3",  "code": "1634", "type": "lec", "professor": "Carlos Eduardo Rodriguez Pineda",     "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-4",  "code": "1637", "type": "lec", "professor": "Carlos Mario Piscal Arevalo",         "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-5",  "code": "1638", "type": "lec", "professor": "Claudia Jeanneth Rios Reyes",         "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-6",  "code": "1639", "type": "lec", "professor": "Fabian Augusto Lamus Baez",           "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-7",  "code": "1640", "type": "lec", "professor": "Fabian Rene Alvarez Sierra",          "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-8",  "code": "1641", "type": "lec", "professor": "German Eduardo Acero Riveros",        "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-9",  "code": "1642", "type": "lec", "professor": "German Ricardo Santos Granados",      "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-10", "code": "1643", "type": "lec", "professor": "Gina Paola Gonzalez Angarita",        "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-11", "code": "1644", "type": "lec", "professor": "Guillermo Pabon Gutierrez",           "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-12", "code": "1645", "type": "lec", "professor": "Hector Alfonso Rodriguez Diaz",       "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-13", "code": "1646", "type": "lec", "professor": "Hector Jose Perez Barrera",           "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-14", "code": "1647", "type": "lec", "professor": "Hector Matamoros Rodriguez",          "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-15", "code": "1648", "type": "lec", "professor": "Ivan Camilo Duran Tovar",             "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-16", "code": "1649", "type": "lec", "professor": "Jaime Erasmo Garzon Moreno",          "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-17", "code": "1650", "type": "lec", "professor": "Javier Fernando Camacho Tauta",       "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-18", "code": "1651", "type": "lec", "professor": "Johan Camilo Garzon Cubides",         "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-19", "code": "1652", "type": "lec", "professor": "Jose Ignacio Nieto Garcia",           "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-20", "code": "1653", "type": "lec", "professor": "Jose Vicente Amortegui Gil",          "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-21", "code": "1654", "type": "lec", "professor": "Juan Carlos Ruge Cardenas",           "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-22", "code": "1655", "type": "lec", "professor": "Kevin Andres Tami Torres",            "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-23", "code": "1656", "type": "lec", "professor": "Laura Cristina Lesmes Posada",        "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-24", "code": "1657", "type": "lec", "professor": "Laura Marcela Valderrama Niño",       "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-25", "code": "1658", "type": "lec", "professor": "Lina Ximena Garzon Avila",            "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-26", "code": "1659", "type": "lec", "professor": "Luis Garza Vasquez",                  "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-27", "code": "1660", "type": "lec", "professor": "Maritza Cecilia Villamizar Ropero",   "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-28", "code": "1661", "type": "lec", "professor": "Miguel Angel Orejuela Duarte",        "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-29", "code": "1662", "type": "lec", "professor": "Monica Marcela Suarez Pradilla",      "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-30", "code": "1663", "type": "lec", "professor": "Nancy Torres Castellanos",            "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-31", "code": "1664", "type": "lec", "professor": "Pedro Nel Quiroga Saavedra",          "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-32", "code": "1665", "type": "lec", "professor": "Ramiro Gutierrez Rodriguez",          "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-33", "code": "1666", "type": "lec", "professor": "Sandra Rocio Jerez Barbosa",          "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-34", "code": "1667", "type": "lec", "professor": "William Hernando Carrillo Rodriguez", "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]},
+            {"id": "DMV4_M-35", "code": "1668", "type": "lec", "professor": "Yuly Andrea Sanchez Londoño",         "sessions": [{"startTime": "16:00", "endTime": "19:00", "day": 5}]}
+        ]
+    },
+    {
+        "id": "ECDI",
+        "name": "Ecuaciones Diferenciales",
+        "credits": 3,
+        "groups": [
+            {
+                "id": "ECDI-1",
+                "code": "1758",
+                "type": "lec",
+                "professor": "Helena Dulcey Hernandez",
+                "sessions": [
+                    {"startTime": "09:00", "endTime": "12:00", "day": 1},
+                    {"startTime": "09:00", "endTime": "12:00", "day": 2},
+                    {"startTime": "09:00", "endTime": "12:00", "day": 3},
+                    {"startTime": "09:00", "endTime": "11:00", "day": 4}
+                ]
+            }
+        ]
+    },
+    {
+        "id": "ECOT_E",
+        "name": "Econometría",
+        "credits": 3,
+        "groups": [
+            {
+                "id": "ECOT_E-1",
+                "code": "1506",
+                "type": "lec",
+                "professor": "Alvaro Andres Perdomo Strauch",
+                "sessions": [
+                    {"startTime": "07:00", "endTime": "13:00", "day": 5},
+                    {"startTime": "17:00", "endTime": "20:00", "day": 4}
+                ]
+            }
+        ]
+    },
+    {
+        "id": "EGI4",
+        "name": "Inglés 4",
+        "credits": 2,
+        "groups": [
+            {
+                "id": "EGI4-1",
+                "code": "1760",
+                "type": "lec",
+                "professor": "Milena Mosquera Mejia",
+                "sessions": [
+                    {"startTime": "09:00", "endTime": "12:00", "day": 1},
+                    {"startTime": "09:00", "endTime": "12:00", "day": 2},
+                    {"startTime": "09:00", "endTime": "12:00", "day": 3},
+                    {"startTime": "09:00", "endTime": "12:00", "day": 4}
+                ]
+            }
+        ]
+    },
+    {
+        "id": "ELA2",
+        "name": "Electrónica Análoga 2",
+        "credits": 3,
+        "groups": [
+            {
+                "id": "ELA2-1",
+                "code": "1837",
+                "type": "lec",
+                "professor": "Juan Manuel Gomez Solano",
+                "sessions": [
+                    {"startTime": "08:00", "endTime": "12:00", "day": 1},
+                    {"startTime": "09:00", "endTime": "12:00", "day": 3}
+                ]
+            }
+        ]
+    },
+    {
+        "id": "ELPO",
+        "name": "Electrónica de Potencia",
+        "credits": 3,
+        "groups": [
+            {
+                "id": "ELPO-1",
+                "code": "1765",
+                "type": "lec",
+                "professor": "Ivan Dario Melo Lagos",
+                "sessions": [
+                    {"startTime": "13:00", "endTime": "17:00", "day": 1},
+                    {"startTime": "13:00", "endTime": "16:00", "day": 3}
+                ]
+            },
+            {
+                "id": "ELPO-1L",
+                "code": "1766",
+                "type": "lab",
+                "professor": "Ivan Dario Melo Lagos",
+                "sessions": [
+                    {"startTime": "13:00", "endTime": "16:00", "day": 2}
+                ]
+            }
+        ]
+    },
+    {
+        "id": "EMIN_M",
+        "name": "Entrega Final Trabajo de Grado",
+        "credits": 2,
+        "groups": [
+            {
+                "id": "EMIN_M-1",
+                "code": "1544",
+                "type": "lec",
+                "professor": "Claudia Patricia Santiago Cely",
+                "sessions": [
+                    {"startTime": "18:00", "endTime": "20:00", "day": 0},
+                    {"startTime": "20:00", "endTime": "22:00", "day": 1}
+                ]
+            },
+            {
+                "id": "EMIN_M-2",
+                "code": "1545",
+                "type": "lec",
+                "professor": "Luis Daniel Benavides Navarro",
+                "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]
+            },
+            {
+                "id": "EMIN_M-3",
+                "code": "1546",
+                "type": "lec",
+                "professor": "Jeronimo Herrera Carbonell",
+                "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 2}]
+            },
+            {
+                "id": "EMIN_M-4",
+                "code": "1547",
+                "type": "lec",
+                "professor": "Ismer David Dorado Sabogal",
+                "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 3}]
+            },
+            {
+                "id": "EMIN_M-5",
+                "code": "1548",
+                "type": "lec",
+                "professor": "Gerardo Ospina Hernandez",
+                "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 4}]
+            },
+            {
+                "id": "EMIN_M-6",
+                "code": "1549",
+                "type": "lec",
+                "professor": "Lina Maria Garces Rodriguez",
+                "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 0}]
+            },
+            {
+                "id": "EMIN_M-7",
+                "code": "1550",
+                "type": "lec",
+                "professor": "Ivan Dario Sanchez Fonseca",
+                "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 1}]
+            },
+            {
+                "id": "EMIN_M-8",
+                "code": "1551",
+                "type": "lec",
+                "professor": "Andres Gomez Casanova",
+                "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 2}]
+            },
+            {
+                "id": "EMIN_M-9",
+                "code": "1552",
+                "type": "lec",
+                "professor": "Diego Alejandro Jara Arango",
+                "sessions": [{"startTime": "18:00", "endTime": "20:00", "day": 3}]
+            }
+        ]
+    }
+]
