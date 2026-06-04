@@ -1,42 +1,52 @@
 /**
- * app.js — Lógica del cliente para el Generador de Horarios Universitarios.
+ * app.js — Generador de Horarios Universitarios
  *
- * Flujo principal:
- *   1. Al cargar la página: obtener materias del backend y renderizar checkboxes.
+ * Flujo:
+ *   1. Carga de materias desde el backend al iniciar.
  *   2. El usuario selecciona materias y marca varios profesores por materia.
- *   3. Al hacer clic en "Calcular", se envía {materiaId, profesoresIds[]} al backend.
- *   4. El backend devuelve {combinaciones, totalPosibles, totalCalculadas}.
- *   5. Se renderizan las combinaciones como tarjetas con su grilla Lunes–Sábado.
+ *   3. "Calcular" llama al backend con {materiaId, profesoresIds[]}.
+ *   4. Se muestran combinaciones ordenadas: sin choques primero, luego por puntaje.
+ *   5. Cada combinación tiene su grilla Lunes–Sábado y botón "Ver Códigos".
  */
 
-// ── Constantes ────────────────────────────────────────────────────────────────
+// ── Constantes de la grilla ────────────────────────────────────────────────
 
-/** Orden de los días para las columnas de la grilla. */
+/**
+ * Franjas horarias fijas de 1h30 cada una, de 07:00 a 19:00.
+ * La etiqueta se muestra en la columna de hora de la tabla.
+ */
+const FRANJAS_HORARIO = [
+    { inicio: '07:00', fin: '08:30' },
+    { inicio: '08:30', fin: '10:00' },
+    { inicio: '10:00', fin: '11:30' },
+    { inicio: '11:30', fin: '13:00' },
+    { inicio: '13:00', fin: '14:30' },
+    { inicio: '14:30', fin: '16:00' },
+    { inicio: '16:00', fin: '17:30' },
+    { inicio: '17:30', fin: '19:00' },
+];
+
+/** Orden de días para las columnas de la grilla. */
 const DIAS_ORDEN = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
 
-/** Etiquetas cortas para mostrar en el resumen de horario de cada profesor. */
+/** Abreviaciones de días para el resumen de horario en el panel de selección. */
 const DIAS_CORTOS = {
     LUNES: 'Lun', MARTES: 'Mar', MIERCOLES: 'Mié',
     JUEVES: 'Jue', VIERNES: 'Vie', SABADO: 'Sáb'
 };
 
-/** Franja horaria de la grilla: 06:00 a 22:00, intervalos de 30 min. */
-const HORA_INICIO_MIN = 6 * 60;
-const HORA_FIN_MIN    = 22 * 60;
-const INTERVALO_MIN   = 30;
+// ── Estado global ─────────────────────────────────────────────────────────
 
-// ── Estado global ─────────────────────────────────────────────────────────────
-
-/** Lista completa de materias cargadas desde el backend. */
+/** Lista de materias cargadas desde el backend. */
 let todasLasMaterias = [];
 
-// ── Inicialización ────────────────────────────────────────────────────────────
+// ── Inicialización ────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', cargarMaterias);
 
-// ── Carga de datos ────────────────────────────────────────────────────────────
+// ── Carga de datos ────────────────────────────────────────────────────────
 
-/** Obtiene todas las materias del backend y construye el panel de selección. */
+/** Obtiene las materias del backend y renderiza el panel de selección. */
 async function cargarMaterias() {
     try {
         const respuesta = await fetch('/api/materias');
@@ -44,23 +54,23 @@ async function cargarMaterias() {
         renderizarPanelSeleccion();
     } catch (error) {
         document.getElementById('lista-materias-seleccion').innerHTML =
-            '<p style="color:red;padding:1rem">Error al cargar las materias. Revisa que el servidor esté corriendo.</p>';
+            '<p style="color:#c2410c;padding:1rem">Error al cargar las materias. Verifica que el servidor esté activo.</p>';
     }
 }
 
-// ── Renderizado del panel de selección ───────────────────────────────────────
+// ── Panel de selección ────────────────────────────────────────────────────
 
 /**
- * Construye la lista de tarjetas de materias con sus checkboxes de profesores.
- * Cada materia tiene un checkbox principal y, al activarse, muestra la lista
- * de profesores disponibles para selección múltiple.
+ * Construye la grilla de tarjetas de materias.
+ * Cada tarjeta tiene: checkbox de materia + nombre + badge de créditos.
+ * Al marcar, se despliega la lista de profesores con checkboxes individuales.
  */
 function renderizarPanelSeleccion() {
     const contenedor = document.getElementById('lista-materias-seleccion');
     contenedor.innerHTML = '';
 
     if (todasLasMaterias.length === 0) {
-        contenedor.innerHTML = '<p class="texto-cargando">No se encontraron materias en el servidor.</p>';
+        contenedor.innerHTML = '<p class="texto-cargando">No se encontraron materias.</p>';
         return;
     }
 
@@ -69,7 +79,7 @@ function renderizarPanelSeleccion() {
         tarjeta.className = 'item-materia-seleccion';
         tarjeta.id = `tarjeta-mat-${materia.id}`;
 
-        // ── Cabecera: checkbox + nombre + créditos ────────────────────────
+        // ── Fila cabecera: checkbox + nombre + créditos ──────────────────
         const cabecera = document.createElement('div');
         cabecera.className = 'cabecera-materia';
 
@@ -78,24 +88,24 @@ function renderizarPanelSeleccion() {
         cbMateria.id = `cb-mat-${materia.id}`;
         cbMateria.addEventListener('change', () => toggleMateria(materia.id, cbMateria.checked));
 
-        const etiquetaMateria = document.createElement('label');
-        etiquetaMateria.htmlFor = `cb-mat-${materia.id}`;
-        etiquetaMateria.textContent = materia.nombre;
+        const lblMateria = document.createElement('label');
+        lblMateria.htmlFor = `cb-mat-${materia.id}`;
+        lblMateria.textContent = materia.nombre;
 
         const badgeCreditos = document.createElement('span');
         badgeCreditos.className = 'badge-creditos';
-        badgeCreditos.textContent = `${materia.creditos || ''} créd.`;
+        badgeCreditos.textContent = (materia.creditos || '?') + ' cr.';
 
         cabecera.appendChild(cbMateria);
-        cabecera.appendChild(etiquetaMateria);
+        cabecera.appendChild(lblMateria);
         cabecera.appendChild(badgeCreditos);
 
-        // ── Zona de profesores (oculta hasta marcar la materia) ───────────
-        const zonaProfs = document.createElement('div');
-        zonaProfs.className = 'zona-profesores';
-        zonaProfs.id = `zona-profs-${materia.id}`;
+        // ── Zona de profesores (oculta hasta marcar la materia) ──────────
+        const zona = document.createElement('div');
+        zona.className = 'zona-profesores';
+        zona.id = `zona-profs-${materia.id}`;
 
-        // Barra de controles: Todos, Ninguno y contador
+        // Barra de controles
         const controles = document.createElement('div');
         controles.className = 'controles-seleccion';
 
@@ -112,121 +122,107 @@ function renderizarPanelSeleccion() {
         const spanConteo = document.createElement('span');
         spanConteo.className = 'conteo-seleccionados';
         spanConteo.id = `conteo-${materia.id}`;
-        spanConteo.textContent = `0 de ${materia.profesores.length} seleccionados`;
+        spanConteo.textContent = `0 de ${materia.profesores.length}`;
 
         controles.appendChild(btnTodos);
         controles.appendChild(btnNinguno);
         controles.appendChild(spanConteo);
 
-        // Lista de checkboxes de profesores
-        const listaChecks = document.createElement('div');
-        listaChecks.className = 'lista-checks-profesores';
+        // Lista de checkboxes de profesores (scrollable)
+        const lista = document.createElement('div');
+        lista.className = 'lista-checks-profesores';
 
         materia.profesores.forEach(prof => {
-            const itemProf = document.createElement('div');
-            itemProf.className = 'item-profesor-checkbox';
+            const item = document.createElement('div');
+            item.className = 'item-profesor-checkbox';
 
-            const cbProf = document.createElement('input');
-            cbProf.type = 'checkbox';
-            cbProf.id = `cb-prof-${prof.id}`;
-            cbProf.className = `cb-prof-mat-${materia.id}`;
-            cbProf.value = prof.id;
-            cbProf.addEventListener('change', () => actualizarConteo(materia.id));
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.id = `cb-prof-${prof.id}`;
+            cb.className = `cb-prof-mat-${materia.id}`;
+            cb.value = prof.id;
+            cb.addEventListener('change', () => actualizarConteo(materia.id));
 
-            const lblProf = document.createElement('label');
-            lblProf.htmlFor = `cb-prof-${prof.id}`;
-            lblProf.style.cursor = 'pointer';
-            lblProf.style.flex = '1';
-            lblProf.style.display = 'flex';
-            lblProf.style.alignItems = 'baseline';
-            lblProf.style.gap = '0.4rem';
-            lblProf.style.flexWrap = 'wrap';
+            const lbl = document.createElement('label');
+            lbl.htmlFor = `cb-prof-${prof.id}`;
+            lbl.style.cssText = 'cursor:pointer;flex:1;display:flex;align-items:baseline;gap:0.35rem;flex-wrap:wrap;';
 
+            // Nombre limpio (sin el [código] que ya viene en el string)
             const nombreSpan = document.createElement('span');
             nombreSpan.className = 'nombre-prof';
-            nombreSpan.textContent = prof.nombre;
-            lblProf.appendChild(nombreSpan);
+            nombreSpan.textContent = limpiarNombreProfesor(prof.nombre);
+            lbl.appendChild(nombreSpan);
 
             // Badge con el código del grupo
-            if (prof.codigoGrupo) {
+            const codigo = prof.codigoGrupo || extraerCodigo(prof.nombre);
+            if (codigo) {
                 const badgeCod = document.createElement('span');
                 badgeCod.className = 'badge-codigo';
-                badgeCod.textContent = prof.codigoGrupo + (prof.tipo === 'lab' ? ' · Lab' : '');
-                lblProf.appendChild(badgeCod);
+                badgeCod.textContent = codigo + (prof.tipo === 'lab' ? ' · Lab' : '');
+                lbl.appendChild(badgeCod);
             }
 
-            // Resumen de horario (días y horas)
+            // Resumen de bloques horarios
             if (prof.bloques && prof.bloques.length > 0) {
-                const horarioSpan = document.createElement('span');
-                horarioSpan.className = 'horario-prof';
-                horarioSpan.textContent = prof.bloques
+                const horSpan = document.createElement('span');
+                horSpan.className = 'horario-prof';
+                horSpan.textContent = prof.bloques
                     .map(b => `${DIAS_CORTOS[b.dia] || b.dia} ${b.horaInicio}–${b.horaFin}`)
                     .join(', ');
-                lblProf.appendChild(horarioSpan);
+                lbl.appendChild(horSpan);
             }
 
-            itemProf.appendChild(cbProf);
-            itemProf.appendChild(lblProf);
-            listaChecks.appendChild(itemProf);
+            item.appendChild(cb);
+            item.appendChild(lbl);
+            lista.appendChild(item);
         });
 
-        zonaProfs.appendChild(controles);
-        zonaProfs.appendChild(listaChecks);
+        zona.appendChild(controles);
+        zona.appendChild(lista);
 
         tarjeta.appendChild(cabecera);
-        tarjeta.appendChild(zonaProfs);
+        tarjeta.appendChild(zona);
         contenedor.appendChild(tarjeta);
     });
 }
 
-// ── Interacción con checkboxes ────────────────────────────────────────────────
+// ── Interacción con checkboxes ────────────────────────────────────────────
 
 /**
- * Muestra u oculta la lista de profesores al marcar/desmarcar una materia.
- * Al marcar, selecciona automáticamente todos los profesores para comodidad.
+ * Muestra/oculta la lista de profesores y preselecciona todos al activar.
  */
 function toggleMateria(materiaId, activa) {
-    const zona = document.getElementById(`zona-profs-${materiaId}`);
+    const zona    = document.getElementById(`zona-profs-${materiaId}`);
     const tarjeta = document.getElementById(`tarjeta-mat-${materiaId}`);
-
     zona.classList.toggle('visible', activa);
     tarjeta.classList.toggle('activa', activa);
-
-    if (activa) {
-        toggleTodosProfesores(materiaId, true); // Preseleccionar todos por defecto
-    } else {
-        toggleTodosProfesores(materiaId, false);
-    }
+    toggleTodosProfesores(materiaId, activa);
 }
 
 /** Marca o desmarca todos los checkboxes de profesores de una materia. */
 function toggleTodosProfesores(materiaId, seleccionar) {
-    document.querySelectorAll(`.cb-prof-mat-${materiaId}`).forEach(cb => {
-        cb.checked = seleccionar;
-    });
+    document.querySelectorAll(`.cb-prof-mat-${materiaId}`)
+        .forEach(cb => { cb.checked = seleccionar; });
     actualizarConteo(materiaId);
 }
 
-/** Actualiza el texto "X de Y seleccionados" para una materia. */
+/** Actualiza el texto "X de Y" del contador de seleccionados. */
 function actualizarConteo(materiaId) {
     const total = document.querySelectorAll(`.cb-prof-mat-${materiaId}`).length;
-    const seleccionados = document.querySelectorAll(`.cb-prof-mat-${materiaId}:checked`).length;
-    const span = document.getElementById(`conteo-${materiaId}`);
-    if (span) span.textContent = `${seleccionados} de ${total} seleccionados`;
+    const sel   = document.querySelectorAll(`.cb-prof-mat-${materiaId}:checked`).length;
+    const span  = document.getElementById(`conteo-${materiaId}`);
+    if (span) span.textContent = `${sel} de ${total}`;
 }
 
-// ── Generación de combinaciones ───────────────────────────────────────────────
+// ── Generación de combinaciones ───────────────────────────────────────────
 
-/**
- * Recopila las selecciones del usuario (materias + profesores marcados),
- * llama al backend y muestra los resultados.
- */
+/** Recopila selecciones y solicita al backend generar todas las combinaciones. */
 async function generarHorario() {
     const selecciones = [];
 
     todasLasMaterias.forEach(materia => {
         const cbMateria = document.getElementById(`cb-mat-${materia.id}`);
-        if (!cbMateria || !cbMateria.checked) return;
+        if (!cbMateria?.checked) return;
 
         const profesoresIds = Array.from(
             document.querySelectorAll(`.cb-prof-mat-${materia.id}:checked`)
@@ -238,166 +234,136 @@ async function generarHorario() {
     });
 
     if (selecciones.length === 0) {
-        alert('Selecciona al menos una materia con uno o más profesores antes de generar.');
+        alert('Selecciona al menos una materia con uno o más profesores.');
         return;
     }
 
-    // Cambiar texto del botón mientras carga
-    const btnGenerar = document.querySelector('.btn-generar');
-    const textoOriginal = btnGenerar.textContent;
-    btnGenerar.textContent = 'Calculando…';
-    btnGenerar.disabled = true;
+    const btn = document.querySelector('.btn-generar');
+    const textoOriginal = btn.textContent;
+    btn.textContent = 'Calculando…';
+    btn.disabled = true;
 
     try {
-        const respuesta = await fetch('/api/horario/generar', {
+        const resp = await fetch('/api/horario/generar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(selecciones)
         });
-
-        if (!respuesta.ok) {
-            alert('Error al generar el horario. Intenta de nuevo.');
-            return;
-        }
-
-        const resultado = await respuesta.json();
-        mostrarResultados(resultado);
-
-    } catch (error) {
+        if (!resp.ok) { alert('Error al generar. Intenta de nuevo.'); return; }
+        mostrarResultados(await resp.json());
+    } catch (e) {
         alert('Error de conexión con el servidor.');
-        console.error(error);
+        console.error(e);
     } finally {
-        btnGenerar.textContent = textoOriginal;
-        btnGenerar.disabled = false;
+        btn.textContent = textoOriginal;
+        btn.disabled = false;
     }
 }
 
-// ── Visualización de resultados ───────────────────────────────────────────────
+// ── Visualización de resultados ───────────────────────────────────────────
 
 /**
- * Renderiza la cabecera de estadísticas y todas las tarjetas de combinaciones.
- *
- * @param {Object} respuesta - {combinaciones, totalPosibles, totalCalculadas}
+ * Muestra el panel de resultados con el contador (esquina superior derecha),
+ * aviso de límite si aplica, y las tarjetas de combinaciones.
  */
 function mostrarResultados(respuesta) {
-    const panelResultados = document.getElementById('panel-resultados');
-    panelResultados.classList.remove('oculto');
-
     const { combinaciones, totalPosibles, totalCalculadas } = respuesta;
 
-    // ── Cabecera con estadísticas ─────────────────────────────────────────
-    const cabecera = document.getElementById('cabecera-resultados');
-    const mostradas = combinaciones.length;
+    // Contador en la esquina superior derecha (texto pequeño)
     const sinChoques = combinaciones.filter(c => !c.tieneChoques).length;
+    document.getElementById('contador-combinaciones').textContent =
+        `${combinaciones.length} mostradas · ${sinChoques} sin choques · ${totalPosibles.toLocaleString()} posibles`;
 
-    let avisoLimite = '';
+    // Aviso de límite de cómputo
+    const avisoEl = document.getElementById('aviso-limite');
     if (totalCalculadas < totalPosibles) {
-        avisoLimite = `<div class="aviso-limite">
-            ⚠ Se calcularon ${totalCalculadas.toLocaleString()} de ${totalPosibles.toLocaleString()}
-            combinaciones posibles (límite de cómputo alcanzado).
-        </div>`;
+        avisoEl.textContent =
+            `⚠ Se evaluaron ${totalCalculadas.toLocaleString()} de ${totalPosibles.toLocaleString()} combinaciones posibles (límite de cómputo alcanzado). Puedes reducir la selección para ver más opciones.`;
+        avisoEl.classList.remove('oculto');
+    } else {
+        avisoEl.classList.add('oculto');
     }
 
-    cabecera.innerHTML = `
-        <div class="resumen-stat">
-            <div class="valor">${totalPosibles.toLocaleString()}</div>
-            <div class="etiqueta">Combinaciones posibles</div>
-        </div>
-        <div class="resumen-stat">
-            <div class="valor">${totalCalculadas.toLocaleString()}</div>
-            <div class="etiqueta">Evaluadas</div>
-        </div>
-        <div class="resumen-stat">
-            <div class="valor">${mostradas}</div>
-            <div class="etiqueta">Mostrando (mejores)</div>
-        </div>
-        <div class="resumen-stat">
-            <div class="valor" style="color:var(--verde)">${sinChoques}</div>
-            <div class="etiqueta">Sin choques</div>
-        </div>
-        ${avisoLimite}
-    `;
+    // Panel visible
+    const panel = document.getElementById('panel-resultados');
+    panel.classList.remove('oculto');
 
-    // ── Tarjetas de combinaciones ─────────────────────────────────────────
-    const listaCombinaciones = document.getElementById('lista-combinaciones');
-    listaCombinaciones.innerHTML = '';
+    // Renderizar tarjetas
+    const lista = document.getElementById('lista-combinaciones');
+    lista.innerHTML = '';
 
     if (combinaciones.length === 0) {
-        listaCombinaciones.innerHTML = '<div class="card" style="text-align:center;color:#546E7A">No se generaron combinaciones. Verifica que los profesores tengan bloques horarios asignados.</div>';
+        lista.innerHTML = '<div class="card" style="text-align:center;color:#6b7280;padding:2rem">No se generaron combinaciones. Verifica que los profesores tengan bloques horarios asignados.</div>';
     } else {
-        combinaciones.forEach(combinacion => {
-            const tarjeta = crearTarjetaCombinacion(combinacion);
-            listaCombinaciones.appendChild(tarjeta);
-        });
+        combinaciones.forEach(c => lista.appendChild(crearTarjetaCombinacion(c)));
     }
 
-    panelResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /**
- * Crea y devuelve el elemento DOM de una tarjeta de combinación.
- *
- * @param {Object} combinacion - ResultadoHorario con entradas, choques, puntaje, etc.
- * @returns {HTMLElement} la tarjeta lista para insertar en el DOM
+ * Construye la tarjeta DOM de una combinación.
+ * Incluye: cabecera, descripción, choques (si los hay), grilla y botón "Ver Códigos".
  */
 function crearTarjetaCombinacion(combinacion) {
     const tarjeta = document.createElement('div');
-    tarjeta.className = `combinacion-card ${combinacion.tieneChoques ? 'tiene-choques' : ''}`;
+    tarjeta.className = `combinacion-card${combinacion.tieneChoques ? ' tiene-choques' : ''}`;
 
-    // ── Cabecera de la tarjeta ────────────────────────────────────────────
-    const cabecera = document.createElement('div');
-    cabecera.className = 'combinacion-cabecera';
+    // ── Cabecera ─────────────────────────────────────────────────────────
+    const cab = document.createElement('div');
+    cab.className = 'combinacion-cabecera';
 
     const numSpan = document.createElement('span');
     numSpan.className = 'combinacion-num';
     numSpan.textContent = `#${combinacion.indiceCombinacion}`;
+    cab.appendChild(numSpan);
 
-    cabecera.appendChild(numSpan);
-
-    // Badge "Mejor opción" para la primera sin choques
+    // Badge "Mejor opción" solo en la primera sin choques
     if (combinacion.indiceCombinacion === 1 && !combinacion.tieneChoques) {
         const badge = document.createElement('span');
         badge.className = 'badge-mejor';
         badge.textContent = '★ Mejor opción';
-        cabecera.appendChild(badge);
+        cab.appendChild(badge);
     }
 
-    const puntajeSpan = document.createElement('span');
-    puntajeSpan.className = 'combinacion-puntaje';
-    puntajeSpan.textContent = `Puntaje: ${combinacion.puntuacion.toFixed(1)}`;
-    cabecera.appendChild(puntajeSpan);
+    const puntaje = document.createElement('span');
+    puntaje.className = 'combinacion-puntaje';
+    puntaje.textContent = `Puntaje: ${combinacion.puntuacion.toFixed(1)}`;
+    cab.appendChild(puntaje);
 
-    const estadoSpan = document.createElement('span');
-    estadoSpan.className = `combinacion-estado ${combinacion.tieneChoques ? 'estado-choque' : 'estado-ok'}`;
-    estadoSpan.textContent = combinacion.tieneChoques ? '⚠ Con choques' : '✓ Sin choques';
-    cabecera.appendChild(estadoSpan);
+    const estado = document.createElement('span');
+    estado.className = `combinacion-estado ${combinacion.tieneChoques ? 'estado-choque' : 'estado-ok'}`;
+    estado.textContent = combinacion.tieneChoques ? '⚠ Con choques' : '✓ Sin choques';
+    cab.appendChild(estado);
 
-    tarjeta.appendChild(cabecera);
+    tarjeta.appendChild(cab);
 
-    // ── Descripción de profesores seleccionados ───────────────────────────
+    // ── Descripción de profesores elegidos ───────────────────────────────
     if (combinacion.descripcionProfesores) {
         const desc = document.createElement('div');
         desc.className = 'combinacion-descripcion';
-        desc.textContent = combinacion.descripcionProfesores;
+        // Limpiar los códigos entre corchetes del texto descriptivo
+        desc.textContent = combinacion.descripcionProfesores.replace(/\s*\[[^\]]*\]/g, '');
         tarjeta.appendChild(desc);
     }
 
-    // ── Advertencias de choque ────────────────────────────────────────────
+    // ── Advertencias de choque ───────────────────────────────────────────
     if (combinacion.tieneChoques && combinacion.choques.length > 0) {
-        const contenedorChoques = document.createElement('div');
-        contenedorChoques.className = 'combinacion-choques';
+        const choquesCont = document.createElement('div');
+        choquesCont.className = 'combinacion-choques';
         combinacion.choques.forEach(msg => {
             const div = document.createElement('div');
             div.className = 'advertencia-choque';
-            div.innerHTML = `<span>⚠</span><span>${msg}</span>`;
-            contenedorChoques.appendChild(div);
+            // Limpiar nombre de profesor en el mensaje de choque
+            div.innerHTML = `<span>⚠</span><span>${msg.replace(/\s*\[[^\]]*\]/g, '')}</span>`;
+            choquesCont.appendChild(div);
         });
-        tarjeta.appendChild(contenedorChoques);
+        tarjeta.appendChild(choquesCont);
     }
 
-    // ── Grilla de horario ─────────────────────────────────────────────────
-    const contenedorGrilla = document.createElement('div');
-    contenedorGrilla.className = 'contenedor-grilla';
+    // ── Grilla Lunes–Sábado ──────────────────────────────────────────────
+    const contGrilla = document.createElement('div');
+    contGrilla.className = 'contenedor-grilla';
 
     const tabla = document.createElement('table');
     tabla.className = 'grilla-horario';
@@ -409,45 +375,49 @@ function crearTarjetaCombinacion(combinacion) {
 
     const tbody = document.createElement('tbody');
     tabla.appendChild(tbody);
-    contenedorGrilla.appendChild(tabla);
-    tarjeta.appendChild(contenedorGrilla);
+    contGrilla.appendChild(tabla);
+    tarjeta.appendChild(contGrilla);
 
-    // Rellenar la grilla con las entradas de esta combinación
     renderizarGrillaEnTabla(combinacion.entradas, tbody);
+
+    // ── Botón "Ver Códigos" ──────────────────────────────────────────────
+    tarjeta.appendChild(crearSeccionCodigos(combinacion));
 
     return tarjeta;
 }
 
 /**
- * Rellena un <tbody> con las filas de la grilla de horario.
- * Itera sobre los slots de 30 min entre HORA_INICIO_MIN y HORA_FIN_MIN.
- *
- * @param {Array}  entradas - lista de EntradaHorario de la combinación
- * @param {HTMLElement} tbody - elemento <tbody> donde insertar las filas
+ * Rellena el <tbody> con una fila por cada franja horaria (07:00–19:00, bloques de 1h30).
+ * Una entrada "ocupa" una franja si sus rangos se solapan.
+ * El texto (nombre de materia y profesor) se muestra solo en el primer slot solapado.
  */
 function renderizarGrillaEnTabla(entradas, tbody) {
-    const totalSlots = (HORA_FIN_MIN - HORA_INICIO_MIN) / INTERVALO_MIN;
+    // Registro de qué (materia+profesor+día) ya mostró texto, para no repetir en slots continuos
+    const textoMostrado = new Set();
 
-    for (let i = 0; i < totalSlots; i++) {
-        const minutoSlot = HORA_INICIO_MIN + i * INTERVALO_MIN;
+    FRANJAS_HORARIO.forEach(franja => {
+        const inicioFranja = horaAMinutos(franja.inicio);
+        const finFranja    = horaAMinutos(franja.fin);
+
         const fila = document.createElement('tr');
 
-        // Columna de etiqueta horaria
+        // Columna de hora
         const celdaHora = document.createElement('td');
         celdaHora.className = 'col-hora';
-        celdaHora.textContent = minutosAHora(minutoSlot);
+        celdaHora.textContent = franja.inicio;
         fila.appendChild(celdaHora);
 
         // Una columna por día
         DIAS_ORDEN.forEach(dia => {
             const celda = document.createElement('td');
 
-            // Buscar entradas que cubren este slot en este día
+            // Buscar entradas que se solapan con esta franja en este día
             const coincidentes = entradas.filter(e => {
                 if (e.dia !== dia) return false;
                 const ini = horaAMinutos(e.horaInicio);
                 const fin = horaAMinutos(e.horaFin);
-                return minutoSlot >= ini && minutoSlot < fin;
+                // Solapamiento: ini < finFranja Y inicioFranja < fin
+                return ini < finFranja && inicioFranja < fin;
             });
 
             if (coincidentes.length === 0) {
@@ -455,50 +425,145 @@ function renderizarGrillaEnTabla(entradas, tbody) {
                 return;
             }
 
-            // Resaltar con borde cuando hay choque (más de una entrada en el slot)
+            // Resaltar con contorno naranja cuando hay choque
             if (coincidentes.length > 1) celda.classList.add('celda-choque');
 
             const entrada = coincidentes[0];
-            const esInicioBloque = minutoSlot === horaAMinutos(entrada.horaInicio);
+            // Clave única para controlar si ya se mostró el texto en este día
+            const claveTexto = `${entrada.materiaId}-${entrada.profesorId}-${dia}`;
+            const mostrarTexto = !textoMostrado.has(claveTexto);
+            if (mostrarTexto) textoMostrado.add(claveTexto);
 
-            const bloqueDiv = document.createElement('div');
-            bloqueDiv.className = 'celda-bloque';
-            bloqueDiv.style.background = entrada.color;
+            const bloque = document.createElement('div');
+            bloque.className = 'celda-bloque';
+            bloque.style.background = entrada.color;
 
-            // Mostrar el nombre solo en el primer slot del bloque
-            if (esInicioBloque) {
-                const nombreMateria = document.createElement('span');
-                nombreMateria.className = 'nombre-materia-grilla';
-                nombreMateria.textContent = entrada.materiaNombre;
+            if (mostrarTexto) {
+                const n1 = document.createElement('span');
+                n1.className = 'nombre-materia-grilla';
+                n1.textContent = acortarTexto(entrada.materiaNombre, 22);
 
-                const nombreProf = document.createElement('span');
-                nombreProf.className = 'nombre-profesor-grilla';
-                nombreProf.textContent = entrada.profesorNombre;
+                const n2 = document.createElement('span');
+                n2.className = 'nombre-profesor-grilla';
+                // Mostrar nombre del profesor sin el código entre corchetes
+                n2.textContent = acortarTexto(limpiarNombreProfesor(entrada.profesorNombre), 24);
 
-                bloqueDiv.appendChild(nombreMateria);
-                bloqueDiv.appendChild(nombreProf);
+                bloque.appendChild(n1);
+                bloque.appendChild(n2);
             }
 
-            celda.appendChild(bloqueDiv);
+            celda.appendChild(bloque);
             fila.appendChild(celda);
         });
 
         tbody.appendChild(fila);
-    }
+    });
 }
 
-// ── Utilidades de tiempo ──────────────────────────────────────────────────────
+// ── Sección "Ver Códigos" ─────────────────────────────────────────────────
 
-/** Convierte minutos desde medianoche a string "HH:mm". */
-function minutosAHora(minutos) {
-    const h = Math.floor(minutos / 60).toString().padStart(2, '0');
-    const m = (minutos % 60).toString().padStart(2, '0');
-    return `${h}:${m}`;
+/**
+ * Crea el pie de la tarjeta con el botón "Ver Códigos de Inscripción"
+ * y la tabla oculta que muestra Materia | Profesor | Código.
+ */
+function crearSeccionCodigos(combinacion) {
+    const pie = document.createElement('div');
+    pie.className = 'pie-combinacion';
+
+    const btn = document.createElement('button');
+    btn.className = 'btn-ver-codigos';
+    btn.textContent = '📋 Ver Códigos de Inscripción';
+
+    // Tabla de códigos (oculta por defecto)
+    const tablaDiv = document.createElement('div');
+    tablaDiv.className = 'tabla-codigos oculto';
+
+    // Deduplicar entradas: una fila por (materia, profesor) único
+    const yaVistos = new Set();
+    const entradasUnicas = [];
+    combinacion.entradas.forEach(e => {
+        const clave = `${e.materiaId}-${e.profesorId}`;
+        if (!yaVistos.has(clave)) {
+            yaVistos.add(clave);
+            entradasUnicas.push(e);
+        }
+    });
+
+    // Construir tabla
+    const tabla = document.createElement('table');
+    tabla.className = 'tabla-inscripcion';
+    tabla.innerHTML = `<thead><tr>
+        <th>Materia</th><th>Profesor</th><th>Código</th>
+    </tr></thead>`;
+
+    const tbody = document.createElement('tbody');
+    entradasUnicas.forEach(e => {
+        const tr = document.createElement('tr');
+
+        const tdMateria = document.createElement('td');
+        tdMateria.textContent = e.materiaNombre;
+
+        const tdProfesor = document.createElement('td');
+        tdProfesor.textContent = limpiarNombreProfesor(e.profesorNombre);
+
+        const tdCodigo = document.createElement('td');
+        // Usar el campo codigoGrupo o extraerlo del nombre como respaldo
+        const codigo = e.codigoGrupo || extraerCodigo(e.profesorNombre);
+        const span = document.createElement('span');
+        span.className = 'codigo-inscripcion';
+        span.textContent = codigo || '—';
+        tdCodigo.appendChild(span);
+
+        tr.appendChild(tdMateria);
+        tr.appendChild(tdProfesor);
+        tr.appendChild(tdCodigo);
+        tbody.appendChild(tr);
+    });
+
+    tabla.appendChild(tbody);
+    tablaDiv.appendChild(tabla);
+
+    // Alternar visibilidad al hacer clic
+    btn.addEventListener('click', () => {
+        const estabaMostrado = !tablaDiv.classList.toggle('oculto');
+        btn.textContent = estabaMostrado
+            ? '📋 Ver Códigos de Inscripción'
+            : '✕ Ocultar Códigos';
+    });
+
+    pie.appendChild(btn);
+    pie.appendChild(tablaDiv);
+    return pie;
 }
 
-/** Convierte string "HH:mm" a minutos desde medianoche. */
+// ── Utilidades ────────────────────────────────────────────────────────────
+
+/** Convierte "HH:mm" a minutos desde medianoche para comparaciones numéricas. */
 function horaAMinutos(hora) {
     if (!hora || !hora.includes(':')) return 0;
     const [h, m] = hora.split(':').map(Number);
     return h * 60 + m;
+}
+
+/** Trunca un texto a `max` caracteres añadiendo "…" si es necesario. */
+function acortarTexto(texto, max) {
+    if (!texto) return '';
+    return texto.length > max ? texto.slice(0, max - 1) + '…' : texto;
+}
+
+/**
+ * Elimina el sufijo "[código]" del nombre del profesor.
+ * Ej: "Carlos García [1562]" → "Carlos García"
+ */
+function limpiarNombreProfesor(nombre) {
+    return (nombre || '').replace(/\s*\[.*/, '').trim();
+}
+
+/**
+ * Extrae el código numérico del nombre del profesor cuando no viene como campo separado.
+ * Ej: "Carlos García [1562]" → "1562"
+ */
+function extraerCodigo(nombre) {
+    const match = /\[(\d+)/.exec(nombre || '');
+    return match ? match[1] : null;
 }

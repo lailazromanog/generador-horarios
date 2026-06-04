@@ -14,6 +14,8 @@ public class EntradaHorario {
     private String horaFin;
     /** Color CSS asignado a la materia para distinguirla visualmente. */
     private String color;
+    /** Código de inscripción del grupo (ej: "1562"), necesario para el panel "Ver Códigos". */
+    private String codigoGrupo;
 
     public EntradaHorario() {}
 
@@ -40,4 +42,7 @@ public class EntradaHorario {
 
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }
+
+    public String getCodigoGrupo() { return codigoGrupo; }
+    public void setCodigoGrupo(String codigoGrupo) { this.codigoGrupo = codigoGrupo; }
 }

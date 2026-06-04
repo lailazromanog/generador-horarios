@@ -4,48 +4,61 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Generador de Horarios Universitarios</title>
+    <!-- Fuente Poppins desde Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
 <body>
 
 <header>
-    <h1>&#127979; Generador de Horarios</h1>
-    <span>Selecciona materias y profesores para ver todas las combinaciones posibles</span>
+    <div class="header-icono">&#127979;</div>
+    <div>
+        <h1>Generador de Horarios</h1>
+        <span class="header-sub">Selecciona materias y profesores para ver todas las combinaciones posibles</span>
+    </div>
 </header>
 
 <main>
 
-    <!-- ═══════════════════════════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════════════════════════
          Panel de selección de materias y profesores
-    ════════════════════════════════════════════════════════════════════ -->
+    ═══════════════════════════════════════════════════════════════════ -->
     <section class="card" id="panel-seleccion">
-        <h2>&#9989; Selecciona tus materias y profesores</h2>
+        <h2 class="card-titulo">&#9989; Selecciona tus materias y profesores</h2>
         <p class="instrucciones-texto">
-            Marca las materias que quieres cursar. Luego elige uno o varios profesores de cada una.
-            El sistema calculará todas las combinaciones posibles y las mostrará ordenadas de mejor a peor.
+            Marca las materias que vas a cursar. Elige uno o varios profesores por materia.
+            El sistema calculará todas las combinaciones posibles y las ordenará de mejor a peor.
         </p>
 
-        <!-- Lista dinámica de materias con checkboxes de profesores -->
+        <!-- Grid 2 columnas de tarjetas de materia -->
         <div id="lista-materias-seleccion">
             <p class="texto-cargando">Cargando materias&#8230;</p>
         </div>
 
         <div class="pie-seleccion">
-            <button class="btn btn-generar" onclick="generarHorario()">
+            <button class="btn-generar" onclick="generarHorario()">
                 &#9654; Calcular todas las combinaciones
             </button>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════════════════
-         Panel de resultados — oculto hasta que se genera
-    ════════════════════════════════════════════════════════════════════ -->
+    <!-- ══════════════════════════════════════════════════════════════════
+         Panel de resultados (oculto hasta generar)
+    ═══════════════════════════════════════════════════════════════════ -->
     <section id="panel-resultados" class="oculto">
 
-        <!-- Cabecera con estadísticas de la búsqueda -->
-        <div class="card" id="cabecera-resultados"></div>
+        <!-- Encabezado con título a la izquierda y contador a la derecha -->
+        <div class="resultados-encabezado">
+            <h2 class="resultados-titulo">Horarios generados</h2>
+            <span id="contador-combinaciones" class="contador-texto"></span>
+        </div>
 
-        <!-- Tarjetas de combinaciones, una por cada resultado -->
+        <!-- Aviso cuando se alcanzó el límite de cómputo -->
+        <div id="aviso-limite" class="aviso-limite oculto"></div>
+
+        <!-- Tarjetas de combinaciones -->
         <div id="lista-combinaciones"></div>
 
     </section>

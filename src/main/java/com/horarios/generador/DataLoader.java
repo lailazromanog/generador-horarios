@@ -59,6 +59,9 @@ public class DataLoader implements CommandLineRunner {
                 Profesor profesor = new Profesor();
                 profesor.setNombre(etiqueta);
                 profesor.setNota("");
+                // Guardar código y tipo por separado para el botón "Ver Códigos"
+                profesor.setCodigoGrupo(codigo);
+                profesor.setTipo(tipo);
                 repositorio.guardarProfesor(profesor, materia);
 
                 // Deduplica sesiones con la misma clave dia+inicio+fin

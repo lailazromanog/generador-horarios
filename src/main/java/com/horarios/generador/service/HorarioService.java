@@ -149,6 +149,7 @@ public class HorarioService {
                 entrada.setHoraInicio(bloque.getHoraInicio());
                 entrada.setHoraFin(bloque.getHoraFin());
                 entrada.setColor(color);
+                entrada.setCodigoGrupo(profesor.getCodigoGrupo()); // Para el panel "Ver Códigos"
                 entradas.add(entrada);
             }
         }
